@@ -1,6 +1,6 @@
-from webServer import webServer
+from WebServer import WebServer
 
 #入口
 
 if __name__ == "__main__":
-    webServer()
+    WebServer()

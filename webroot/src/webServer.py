@@ -1,6 +1,4 @@
 
 
-
-
-def  webServer(args):
+def  WebServer():
     print("start webServer")
