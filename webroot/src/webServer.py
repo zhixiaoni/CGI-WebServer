@@ -1,6 +1,6 @@
 import socket
 import parameter
-import WorkData
+from WorkData import WorkData
 from log import LogInfo
 
 def  WebServer():
@@ -11,10 +11,10 @@ def  WebServer():
     # 日志就照着这个写
     LogInfo("start tcp socket")
     
-    # setsockopt
-    
+    # setsockopt 超时断连等设置
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # 绑定
-    server.bind((parameter.ip, parameter.port))
+    server.bind((parameter.ip, int(parameter.port)))
     
     # 缓冲队列中的最大数目
     server.listen(parameter.MaxWaiting)
@@ -22,9 +22,11 @@ def  WebServer():
     while True:
         
         # 线程控制 最大数目 parameter.MaxConnection
-        
-        # 接受
-        newsocket, client_addr = server.accept()
-        
-        # 创建新线程处理连接
+        if len(WorkData.ConnectingThread) < parameter.MaxConnection:
+            # 接受
+            newsocket, client_addr = server.accept()
+            # 创建新线程处理连接
+            WorkData.ConnectingThread.append(WorkData(newsocket, client_addr))    #加入队列
+            WorkData.ConnectingThread[-1].setDaemon(True)   #设为守护进程
+            WorkData.ConnectingThread[-1].start()   #开始
         
