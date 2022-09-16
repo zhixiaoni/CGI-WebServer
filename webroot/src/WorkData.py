@@ -10,7 +10,7 @@ class WorkData(threading.Thread):
         self.newsocket = newsocket
         self.client_addr = client_addr
         
-        
+    # TODO 何时断开连接
     def run(self):
         try:
             self.newsocket.recv(1024).decode("utf-8")
