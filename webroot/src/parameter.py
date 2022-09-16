@@ -12,7 +12,7 @@ log_path = os.path.join(webroot_path,r"log")
 parser = argparse.ArgumentParser()
 # 添加参数
 parser.add_argument('--ip', default = "127.0.0.1")
-parser.add_argument('-p','--port', default = 12141)
+parser.add_argument('-p','--port', default = 8888)
 # 解析
 args = parser.parse_args()
 # 参数
