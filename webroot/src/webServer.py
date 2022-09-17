@@ -1,15 +1,16 @@
 import socket
 import parameter
 from WorkData import WorkData
-from log import LogInfo
+from log import MyLog
 
 def  WebServer():
+    mylog = MyLog()
     #tcp
     server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     #udp socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     
     # 日志就照着这个写
-    LogInfo("start tcp socket")
+    mylog.LogInfo("start tcp socket")
     
     # setsockopt 超时断连等设置
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -26,7 +27,7 @@ def  WebServer():
             # 接受
             newsocket, client_addr = server.accept()
             # 创建新线程处理连接
-            WorkData.ConnectingThread.append(WorkData(newsocket, client_addr))    #加入队列
+            WorkData.ConnectingThread.append(WorkData(newsocket, client_addr, mylog))    #加入队列
             WorkData.ConnectingThread[-1].setDaemon(True)   #设为守护进程
             WorkData.ConnectingThread[-1].start()   #开始
         
