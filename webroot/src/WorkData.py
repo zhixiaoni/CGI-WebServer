@@ -9,15 +9,32 @@ class WorkData(threading.Thread):
         self.newsocket = newsocket
         self.client_addr = client_addr
         self.mylog = mylog
-    # TODO 何时断开连接
+        
+    # TODO 解析和发送
     def run(self):
         try:
-            rec = self.newsocket.recv(1024).decode("utf-8")
-            print(rec)
-            response = "HTTP/1.1 404 NOT FOUND\r\n "
+            RecvData = self.newsocket.recv(1024).decode("utf-8")
+            print(RecvData)
+            
+            # 解析RecvData
+            
+            
+            
+            #根据解析 发送对应的报文
+            
+            response = "HTTP/1.1 200 OK\r\n "
+            response += "Content-Length: 128\r\n"
+            response += "Content-Type: text/html; charset=UTF-8\r\n"
+            response += "Connection: close\r\n"
             response += "\r\n"
-            response += "file not found!!!!"
+            response += """<html>
+<body>
+finnaly success
+</body>
+</html>"""
+
             self.newsocket.send(response.encode("utf-8"))
+            print(response)
         except IOError:
             self.mylog.LogError("send error")
         finally:

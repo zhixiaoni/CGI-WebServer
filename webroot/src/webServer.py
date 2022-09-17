@@ -8,8 +8,8 @@ def  WebServer():
     #tcp
     server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     #udp socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    
-    # 日志就照着这个写
+
+
     mylog.LogInfo("start tcp socket")
     
     # setsockopt 超时断连等设置
