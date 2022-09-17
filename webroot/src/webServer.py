@@ -18,16 +18,16 @@ def  WebServer():
     server.bind((parameter.ip, int(parameter.port)))
     
     # 缓冲队列中的最大数目
-    server.listen(parameter.MaxWaiting)
+    server.listen(parameter.maxWaiting)
     
     while True:
         
         # 线程控制 最大数目 parameter.MaxConnection
-        if len(WorkData.ConnectingThread) < parameter.MaxConnection:
+        if len(WorkData.connectingThread) < parameter.maxConnection:
             # 接受
             newsocket, client_addr = server.accept()
             # 创建新线程处理连接
-            WorkData.ConnectingThread.append(WorkData(newsocket, client_addr, mylog))    #加入队列
-            WorkData.ConnectingThread[-1].setDaemon(True)   #设为守护进程
-            WorkData.ConnectingThread[-1].start()   #开始
+            WorkData.connectingThread.append(WorkData(newsocket, client_addr, mylog))    #加入队列
+            WorkData.connectingThread[-1].setDaemon(True)   #设为守护进程
+            WorkData.connectingThread[-1].start()   #开始
         
