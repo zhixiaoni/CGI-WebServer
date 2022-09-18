@@ -1,5 +1,7 @@
+import os
 import threading
 import parameter
+import re
 from socket import SHUT_RDWR
 
 class Response():
@@ -14,7 +16,7 @@ class Response():
     contentTypeDict = {"text":"Content-Type: text/html; charset=UTF-8\r\n",\
         "image":"Content-Type: image/jpg\r\n"}
     
-    contentLength = "Content-Length: 128\r\n"
+    contentLength = "Content-Length: 65536\r\n"
     #空行
     blankLine = "\r\n"
     
@@ -22,7 +24,7 @@ class Response():
         #默认预置200
         self.statusLine = "HTTP/1.1 200 OK\r\n"
         #默认预置为text
-        self.header = "Content-Length: 128\r\n" \
+        self.header = Response.contentLength \
             + Response.contentTypeDict["text"] \
             +"Connection: close\r\n"
             
@@ -38,16 +40,21 @@ class Response():
     
     #设置Header        
     def SetHeader(self, contentType = "text"):
-        self.header = "Content-Length: 128\r\n" \
+        self.header = Response.contentLength \
             + Response.contentTypeDict[contentType] \
             +"Connection: close\r\n"
     
     #设置Body  
-    # TODO     
-    def SetBody(self):
-        f = open(parameter.index_path, mode = "r", encoding = 'utf-8')
+    #Get方法，直接返回路径下的文件
+    def SetGetBody(self, path = parameter.index_path):
+        f = open(path, mode = "r", encoding = 'utf-8')
         self.body = f.read()
         f.close()
+        
+    # TODO 
+    # Post方法，调用CGI
+    def SetPostBody(self):
+        pass
         
     #输出最终报文结果
     def GetRes(self):
@@ -62,7 +69,17 @@ class WorkData(threading.Thread):
         self.newsocket = newsocket
         self.client_addr = client_addr
         self.mylog = mylog
-        
+    
+    def Resolv(self, recvData):
+        pattern = re.compile("([a-zA-Z]+)([ /]*)([a-zA-Z0-9.]*)( HTTP/1.1)(.*)", re.S)
+        m = pattern.match(recvData)
+        method = m.group(1)
+        if m.group(3) == "":
+            path = parameter.index_path
+        else:
+            path = os.path.join(parameter.webroot_path, m.group(3))
+        return method, path
+    
     # TODO 解析和发送
     def run(self):
         try:
@@ -70,17 +87,15 @@ class WorkData(threading.Thread):
             print(recvData)
             
             # TODO:解析RecvData
-            
-            
+            method, path = self.Resolv(recvData)
             
             #TODO:根据解析 发送对应的报文
             response = Response(self.mylog)
             response.SetStatusLine(200) #默认200，可以不设置
             response.SetHeader("text") #默认为text，可以不设置
-            response.SetBody()
-
+            response.SetGetBody(path = path)
             self.newsocket.send(response.GetRes())
-            print(response.GetRes())
+            #print(response.GetRes())
         except IOError:
             self.mylog.LogError("send error")
         finally:
