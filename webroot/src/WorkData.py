@@ -71,7 +71,7 @@ class WorkData(threading.Thread):
         self.mylog = mylog
     
     def Resolv(self, recvData):
-        pattern = re.compile("([a-zA-Z]+)([ /]*)([a-zA-Z0-9.]*)( HTTP/1.1)(.*)", re.S)
+        pattern = re.compile("([a-zA-Z]+)([ /]*)([a-zA-Z0-9./]*)( HTTP/1.1)(.*)", re.S)
         m = pattern.match(recvData)
         method = m.group(1)
         if m.group(3) == "":
