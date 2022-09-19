@@ -80,7 +80,7 @@ class WorkData(threading.Thread):
             else:
                 path = os.path.join(parameter.webroot_path, m.group(3))
             return method, path, True
-        except :
+        except:
             self.mylog.LogError("resolv error")
             return "", "", False
         
@@ -109,7 +109,6 @@ class WorkData(threading.Thread):
             recvData = self.newsocket.recv(1024).decode("utf-8")
             print(recvData)
             
-            # TODO:解析RecvData
             method, path, resolvRes = self.Resolv(recvData)
             
             #TODO:根据解析 发送对应的报文
