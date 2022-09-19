@@ -73,13 +73,23 @@ class WorkData(threading.Thread):
     def Resolv(self, recvData):
         pattern = re.compile("([a-zA-Z]+)([ /]*)([a-zA-Z0-9./]*)( HTTP/1.1)(.*)", re.S)
         m = pattern.match(recvData)
-        method = m.group(1)
-        if m.group(3) == "":
-            path = parameter.index_path
-        else:
-            path = os.path.join(parameter.webroot_path, m.group(3))
-        return method, path
-    
+        try:
+            method = m.group(1)
+            if m.group(3) == "":
+                path = parameter.index_path
+            else:
+                path = os.path.join(parameter.webroot_path, m.group(3))
+            return method, path, True
+        except :
+            self.mylog.LogError("resolv error")
+            return "", "", False
+        
+    def Deal400(self, response):
+        response.SetStatusLine(400)
+        response.SetHeader("text")
+        response.SetGetBody(path = parameter.html400_path)
+        self.newsocket.send(response.GetRes())
+        
     # TODO 解析和发送
     def run(self):
         try:
@@ -87,10 +97,17 @@ class WorkData(threading.Thread):
             print(recvData)
             
             # TODO:解析RecvData
-            method, path = self.Resolv(recvData)
+            method, path, resolvRes = self.Resolv(recvData)
             
             #TODO:根据解析 发送对应的报文
             response = Response(self.mylog)
+            
+            # 解析失败 有语法错误 返回400
+            if not resolvRes:
+                self.Deal400(response)
+                raise IOError
+                
+                
             response.SetStatusLine(200) #默认200，可以不设置
             response.SetHeader("text") #默认为text，可以不设置
             response.SetGetBody(path = path)

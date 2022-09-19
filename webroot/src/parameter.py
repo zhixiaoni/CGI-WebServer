@@ -12,7 +12,7 @@ html_path = os.path.join(webroot_path,r"html")
 #file
 index_path = os.path.join(webroot_path,r"index.html")
 html404_path = os.path.join(webroot_path,r"404.html")
-
+html400_path = os.path.join(html_path,r"400.html")
 
 # net
 # 参数解析器
