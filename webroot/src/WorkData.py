@@ -122,9 +122,10 @@ class WorkData(threading.Thread):
             if method == "GET":
                 self.DealGet(response = response, path = path)
             #POST方法
-            else:
+            elif method == "POST":
                 pass    
-                
+            else:
+                pass  
             #print(response.GetRes())
         except IOError:
             self.mylog.LogError("send error")
