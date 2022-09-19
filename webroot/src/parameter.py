@@ -3,9 +3,9 @@ import argparse
 
 # path
 # dir
-webroot_path = os.path.abspath("..")
-src_path = os.getcwd()
-CGI_WebServer_path = os.path.abspath(r"../..")
+webroot_path = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
+src_path = os.path.abspath(os.path.dirname(__file__))
+CGI_WebServer_path = os.path.abspath(os.path.join(webroot_path,".."))
 log_path = os.path.join(webroot_path,r"log")
 html_path = os.path.join(webroot_path,r"html")
 
