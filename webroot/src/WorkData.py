@@ -103,9 +103,6 @@ class WorkData(threading.Thread):
             self.newsocket.send(response.GetRes())              
         
 
-        
-        
-     
     # TODO 解析和发送
     def run(self):
         try:
@@ -122,8 +119,10 @@ class WorkData(threading.Thread):
                 self.Deal400(response = response)
                 raise IOError
             
+            #GET方法
             if method == "GET":
                 self.DealGet(response = response, path = path)
+            #POST方法
             else:
                 pass    
                 
