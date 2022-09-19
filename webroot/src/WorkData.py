@@ -89,7 +89,23 @@ class WorkData(threading.Thread):
         response.SetHeader("text")
         response.SetGetBody(path = parameter.html400_path)
         self.newsocket.send(response.GetRes())
+    
+    def DealGet(self, response, path):
+        try:
+            response.SetGetBody(path = path)
+            response.SetStatusLine(200) 
+        except:
+            self.mylog.LogError("path not correct")
+            response.SetGetBody(path = parameter.html404_path)
+            response.SetStatusLine(404) 
+        finally:
+            response.SetHeader("text") 
+            self.newsocket.send(response.GetRes())              
         
+
+        
+        
+     
     # TODO 解析和发送
     def run(self):
         try:
@@ -101,17 +117,16 @@ class WorkData(threading.Thread):
             
             #TODO:根据解析 发送对应的报文
             response = Response(self.mylog)
-            
             # 解析失败 有语法错误 返回400
             if not resolvRes:
-                self.Deal400(response)
+                self.Deal400(response = response)
                 raise IOError
+            
+            if method == "GET":
+                self.DealGet(response = response, path = path)
+            else:
+                pass    
                 
-                
-            response.SetStatusLine(200) #默认200，可以不设置
-            response.SetHeader("text") #默认为text，可以不设置
-            response.SetGetBody(path = path)
-            self.newsocket.send(response.GetRes())
             #print(response.GetRes())
         except IOError:
             self.mylog.LogError("send error")
