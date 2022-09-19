@@ -44,6 +44,9 @@ class Response():
             + Response.contentTypeDict[contentType] \
             +"Connection: close\r\n"
     
+    def SetBody(self, body = ""):
+        self.body = body
+    
     #设置Body  
     #Get方法，直接返回路径下的文件
     def SetGetBody(self, path = parameter.index_path):
@@ -101,7 +104,20 @@ class WorkData(threading.Thread):
         finally:
             response.SetHeader("text") 
             self.newsocket.send(response.GetRes())              
-        
+    
+    #和Get方法一样，不过最后把body设为"" 
+    def DealHead(self, response, path):
+        try:
+            response.SetGetBody(path = path)
+            response.SetStatusLine(200) 
+        except:
+            self.mylog.LogError("path not correct")
+            response.SetGetBody(path = parameter.html404_path)
+            response.SetStatusLine(404) 
+        finally:
+            response.SetHeader("text") 
+            response.SetBody(body = "")
+            self.newsocket.send(response.GetRes())   
 
     # TODO 解析和发送
     def run(self):
@@ -124,8 +140,9 @@ class WorkData(threading.Thread):
             #POST方法
             elif method == "POST":
                 pass    
+            #HEAD方法
             else:
-                pass  
+                self.DealHead(response = response, path = path) 
             #print(response.GetRes())
         except IOError:
             self.mylog.LogError("send error")
