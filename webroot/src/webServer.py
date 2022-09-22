@@ -13,7 +13,7 @@ def  WebServer():
     mylog.LogInfo("start tcp socket")
     
     # setsockopt 超时断连等设置
-    #server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    # server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # 绑定
     server.bind((parameter.ip, int(parameter.port)))
     
