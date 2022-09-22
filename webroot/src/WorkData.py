@@ -86,39 +86,57 @@ class WorkData(threading.Thread):
         except:
             self.mylog.LogError("resolv error")
             return "", "", False
-        
-    def Deal400(self, response):
+    
+    def Resolv2(self, recvData):
+        pattern = re.compile("(.*?)(\n.*?)(User-Agent: )(.*?)(\n.*)",re.S)
+        m = pattern.match(recvData)
+        request = m.group(1)
+        userAgent = m.group(4)
+        return request, userAgent
+       
+    def Deal400(self, response, request, userAgent):
         response.SetStatusLine(400)
         response.SetHeader("text")
         response.SetGetBody(path = parameter.html400_path)
         self.newsocket.send(response.GetRes())
-    
-    def DealGet(self, response, path):
+        self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 404,\
+                len(response.GetRes()), userAgent)) 
+           
+    def DealGet(self, response, path, request, userAgent):
+        response.SetHeader("text") 
         try:
             response.SetGetBody(path = path)
             response.SetStatusLine(200) 
+            self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 200,\
+                len(response.GetRes()), userAgent))
         except:
             self.mylog.LogError("path not correct")
             response.SetGetBody(path = parameter.html404_path)
             response.SetStatusLine(404) 
+            self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 404,\
+                len(response.GetRes()), userAgent))
         finally:
-            response.SetHeader("text") 
             self.newsocket.send(response.GetRes())              
     
     #和Get方法一样，不过最后把body设为"" 
-    def DealHead(self, response, path):
+    def DealHead(self, response, path, request, userAgent):
+        response.SetHeader("text") 
         try:
             response.SetGetBody(path = path)
+            response.SetBody(body = "")
             response.SetStatusLine(200) 
+            self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 200,\
+                len(response.GetRes()), userAgent))
         except:
             self.mylog.LogError("path not correct")
             response.SetGetBody(path = parameter.html404_path)
-            response.SetStatusLine(404) 
-        finally:
-            response.SetHeader("text") 
             response.SetBody(body = "")
-            self.newsocket.send(response.GetRes())   
-
+            response.SetStatusLine(404) 
+            self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 404,\
+                len(response.GetRes()), userAgent))
+        finally:
+            self.newsocket.send(response.GetRes())     
+        
     # TODO 解析和发送
     def run(self):
         try:
@@ -131,18 +149,20 @@ class WorkData(threading.Thread):
             response = Response(self.mylog)
             # 解析失败 有语法错误 返回400
             if not resolvRes:
-                self.Deal400(response = response)
+                self.Deal400(response = response, request = request, userAgent =userAgent)
                 raise IOError
             
+            request, userAgent = self.Resolv2(recvData)
+
             #GET方法
             if method == "GET":
-                self.DealGet(response = response, path = path)
+                self.DealGet(response = response, path = path, request = request, userAgent =userAgent)
             #POST方法
             elif method == "POST":
                 pass    
             #HEAD方法
             else:
-                self.DealHead(response = response, path = path) 
+                self.DealHead(response = response, path = path, request = request, userAgent =userAgent) 
             #print(response.GetRes())
         except IOError:
             self.mylog.LogError("send error")

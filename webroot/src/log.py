@@ -2,6 +2,7 @@
 import os
 import parameter
 from loguru import logger
+import time
 
 #一点示例
 
@@ -25,7 +26,12 @@ class MyLog():
         logger.warning(info)   
 
     def LogError(self, info):
-        logger.error(info)      
+        logger.error(info)     
+    
+    def StdInfo(self, ip, request, status, length, userAgent):
+        now = time.localtime()
+        now_time = time.strftime(r"%d/%B/%Y %H:%M:%S", now)
+        return '%s--[%s] %s %d %d %s' % (ip, now_time, request, status, length, userAgent)
         
 
 
