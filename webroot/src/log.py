@@ -31,7 +31,7 @@ class MyLog():
     def StdInfo(self, ip, request, status, length, userAgent):
         now = time.localtime()
         now_time = time.strftime(r"%d/%B/%Y %H:%M:%S", now)
-        return '%s--[%s] %s %d %d %s' % (ip, now_time, request, status, length, userAgent)
+        return '%s--[%s] "%s" %d %d "%s"' % (ip, now_time, request, status, length, userAgent)
         
 
 

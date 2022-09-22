@@ -88,7 +88,7 @@ class WorkData(threading.Thread):
             return "", "", False
     
     def Resolv2(self, recvData):
-        pattern = re.compile("(.*?)(\n.*?)(User-Agent: )(.*?)(\n.*)",re.S)
+        pattern = re.compile("(.*?)(\r\n.*?)(User-Agent: )(.*?)(\r\n.*)",re.S)
         m = pattern.match(recvData)
         request = m.group(1)
         userAgent = m.group(4)
