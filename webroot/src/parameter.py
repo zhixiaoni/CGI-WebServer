@@ -8,11 +8,13 @@ src_path = os.path.abspath(os.path.dirname(__file__))
 CGI_WebServer_path = os.path.abspath(os.path.join(webroot_path,".."))
 log_path = os.path.join(webroot_path,r"log")
 html_path = os.path.join(webroot_path,r"html")
+CGI_path = os.path.join(webroot_path,r"CGI-bin")
 
 #file
 index_path = os.path.join(webroot_path,r"index.html")
 html404_path = os.path.join(webroot_path,r"404.html")
 html400_path = os.path.join(html_path,r"400.html")
+html403_path = os.path.join(html_path,r"403.html")
 
 # net
 # 参数解析器

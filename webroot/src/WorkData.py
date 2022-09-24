@@ -48,8 +48,12 @@ class Response():
         self.body = body
     
     #设置Body  
-    #Get方法，直接返回路径下的文件
+    #Get方法，考察访问权限，直接返回路径下的文件
     def SetGetBody(self, path = parameter.index_path):
+        if not (path == parameter.index_path or path == parameter.html404_path or \
+            path.startswith(parameter.html_path) or path.startswith(parameter.CGI_path)):
+            raise IOError
+        
         f = open(path, mode = "r", encoding = 'utf-8')
         self.body = f.read()
         f.close()
@@ -99,9 +103,19 @@ class WorkData(threading.Thread):
         response.SetHeader("text")
         response.SetGetBody(path = parameter.html400_path)
         self.newsocket.send(response.GetRes())
-        self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 404,\
+        self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 400,\
                 len(response.GetRes()), userAgent)) 
-           
+         
+    
+    def Deal404(self, response, request, userAgent):
+        response.SetHeader("text")
+        self.mylog.LogError("path not correct")
+        response.SetGetBody(path = parameter.html404_path)
+        response.SetStatusLine(404) 
+        self.newsocket.send(response.GetRes())
+        self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 404,\
+            len(response.GetRes()), userAgent))        
+       
     def DealGet(self, response, path, request, userAgent):
         response.SetHeader("text") 
         try:
@@ -110,10 +124,10 @@ class WorkData(threading.Thread):
             self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 200,\
                 len(response.GetRes()), userAgent))
         except:
-            self.mylog.LogError("path not correct")
-            response.SetGetBody(path = parameter.html404_path)
-            response.SetStatusLine(404) 
-            self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 404,\
+            self.mylog.LogError("forbidden")
+            response.SetGetBody(path = parameter.html403_path)
+            response.SetStatusLine(403) 
+            self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 403,\
                 len(response.GetRes()), userAgent))
         finally:
             self.newsocket.send(response.GetRes())              
@@ -128,11 +142,11 @@ class WorkData(threading.Thread):
             self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 200,\
                 len(response.GetRes()), userAgent))
         except:
-            self.mylog.LogError("path not correct")
-            response.SetGetBody(path = parameter.html404_path)
+            self.mylog.LogError("forbidden")
+            response.SetGetBody(path = parameter.html403_path)
             response.SetBody(body = "")
-            response.SetStatusLine(404) 
-            self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 404,\
+            response.SetStatusLine(403) 
+            self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 403,\
                 len(response.GetRes()), userAgent))
         finally:
             self.newsocket.send(response.GetRes())     
@@ -149,10 +163,15 @@ class WorkData(threading.Thread):
             response = Response(self.mylog)
             # 解析失败 有语法错误 返回400
             if not resolvRes:
-                self.Deal400(response = response, request = request, userAgent =userAgent)
+                self.Deal400(response = response, request = "", userAgent = "")
                 raise IOError
             
             request, userAgent = self.Resolv2(recvData)
+            
+            #文件不存在 404
+            if not os.path.exists(path = path):
+                self.Deal404(response = response, request = request, userAgent =userAgent)  
+                raise IOError
 
             #GET方法
             if method == "GET":
