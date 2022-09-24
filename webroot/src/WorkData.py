@@ -151,7 +151,7 @@ class WorkData(threading.Thread):
         finally:
             self.newsocket.send(response.GetRes())     
         
-    # TODO 解析和发送
+    # 解析和发送
     def run(self):
         try:
             recvData = self.newsocket.recv(1024).decode("utf-8")
@@ -159,7 +159,6 @@ class WorkData(threading.Thread):
             
             method, path, resolvRes = self.Resolv(recvData)
             
-            #TODO:根据解析 发送对应的报文
             response = Response(self.mylog)
             # 解析失败 有语法错误 返回400
             if not resolvRes:
