@@ -9,6 +9,7 @@ CGI_WebServer_path = os.path.abspath(os.path.join(webroot_path,".."))
 log_path = os.path.join(webroot_path,r"log")
 html_path = os.path.join(webroot_path,r"html")
 CGI_path = os.path.join(webroot_path,r"CGI-bin")
+picture_path = os.path.join(webroot_path,r"picture")
 
 #file
 index_path = os.path.join(webroot_path,r"index.html")

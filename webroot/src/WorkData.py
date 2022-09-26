@@ -3,31 +3,34 @@ import threading
 import parameter
 import re
 from socket import SHUT_RDWR
+import base64
 
 class Response():
     #详见http格式.txt
     #状态行
     #400 客户端请求有语法错误; 403 收到请求但拒绝服务; 404 请求资源不存在
-    statusLineDict = {200 : "HTTP/1.1 200 OK\r\n",\
-        400 : "HTTP/1.1 400 Bad Request\r\n",\
-        403: "HTTP/1.1 403 Forbidden\r\n",\
-        404: "HTTP/1.1 404 Not Found\r\n"}
+    statusLineDict = {200 : "HTTP/1.0 200 OK\r\n",\
+        400 : "HTTP/1.0 400 Bad Request\r\n",\
+        403: "HTTP/1.0 403 Forbidden\r\n",\
+        404: "HTTP/1.0 404 Not Found\r\n"}
     #类型
     contentTypeDict = {"text":"Content-Type: text/html; charset=UTF-8\r\n",\
         "image":"Content-Type: image/jpg\r\n"}
     
-    contentLength = "Content-Length: 65536\r\n"
+    # contentLength = "Content-Length: "
     #空行
     blankLine = "\r\n"
     
     def __init__(self, mylog):
         #默认预置200
-        self.statusLine = "HTTP/1.1 200 OK\r\n"
+        self.statusLine = "HTTP/1.0 200 OK\r\n"
         #默认预置为text
-        self.header = Response.contentLength \
-            + Response.contentTypeDict["text"] \
-            +"Connection: close\r\n"
-            
+        self.contentType = "text"
+        
+        self.header = ""
+        # self.header = Response.contentLength \
+        #     + Response.contentTypeDict[self.contentType] \
+        #     +"Connection: close\r\n"            
         self.blankLine = Response.blankLine
         self.body = ""
         
@@ -39,24 +42,38 @@ class Response():
         self.statusLine = Response.statusLineDict[status]
     
     #设置Header        
-    def SetHeader(self, contentType = "text"):
-        self.header = Response.contentLength \
-            + Response.contentTypeDict[contentType] \
+    def SetHeader(self):
+        self.header = Response.contentTypeDict[self.contentType] \
             +"Connection: close\r\n"
+            
+        # self.header = Response.contentLength \
+        #     + str(len(self.body)) \
+        #     + "\r\n" \
+        #     + Response.contentTypeDict[self.contentType] \
+        #     +"Connection: close\r\n"
+    
+    def SetContentType(self, contentType = "text"):
+        self.contentType = contentType
     
     def SetBody(self, body = ""):
         self.body = body
+    
     
     #设置Body  
     #Get方法，考察访问权限，直接返回路径下的文件
     def SetGetBody(self, path = parameter.index_path):
         if not (path == parameter.index_path or path == parameter.html404_path or \
-            path.startswith(parameter.html_path) or path.startswith(parameter.CGI_path)):
+            path.startswith(parameter.html_path) or path.startswith(parameter.CGI_path) or \
+                path.startswith(parameter.picture_path)):
             raise IOError
-        
-        f = open(path, mode = "r", encoding = 'utf-8')
-        self.body = f.read()
-        f.close()
+        if self.contentType == "image":
+            f = open(path, mode = "rb")
+            self.body = f.read()
+            f.close()
+        else:
+            f = open(path, mode = "r", encoding = 'utf-8')
+            self.body = f.read()
+            f.close()
         
     # TODO 
     # Post方法，调用CGI
@@ -65,7 +82,10 @@ class Response():
         
     #输出最终报文结果
     def GetRes(self):
-        return (self.statusLine + self.header + self.blankLine + self.body).encode("utf-8")
+        if self.contentType == "image":
+            return (self.statusLine + self.header + self.blankLine).encode("utf-8"), self.body
+        else:
+            return (self.statusLine + self.header + self.blankLine).encode("utf-8"), self.body.encode("utf-8")
 
 
 class WorkData(threading.Thread):
@@ -77,6 +97,11 @@ class WorkData(threading.Thread):
         self.client_addr = client_addr
         self.mylog = mylog
     
+    def SendResponse(self, response):
+        self.newsocket.send(response.GetRes()[0])
+        self.newsocket.send(response.GetRes()[1])
+        
+        
     def Resolv(self, recvData):
         pattern = re.compile("([a-zA-Z]+)([ /]*)([a-zA-Z0-9./]*)( HTTP/1.1)(.*)", re.S)
         m = pattern.match(recvData)
@@ -97,59 +122,74 @@ class WorkData(threading.Thread):
         request = m.group(1)
         userAgent = m.group(4)
         return request, userAgent
-       
+
+     
     def Deal400(self, response, request, userAgent):
         response.SetStatusLine(400)
-        response.SetHeader("text")
+        response.SetHeader()
         response.SetGetBody(path = parameter.html400_path)
-        self.newsocket.send(response.GetRes())
+        self.SendResponse(response)
         self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 400,\
-                len(response.GetRes()), userAgent)) 
+                len(response.GetRes()[-1]), userAgent)) 
          
+ 
     
     def Deal404(self, response, request, userAgent):
-        response.SetHeader("text")
+        response.SetHeader()
         self.mylog.LogError("path not correct")
         response.SetGetBody(path = parameter.html404_path)
         response.SetStatusLine(404) 
-        self.newsocket.send(response.GetRes())
+        self.SendResponse(response)
         self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 404,\
-            len(response.GetRes()), userAgent))        
+            len(response.GetRes()[-1]), userAgent))        
+
        
     def DealGet(self, response, path, request, userAgent):
-        response.SetHeader("text") 
+        if path.endswith(("jpeg","jpg")):
+            response.SetContentType("image") 
+        else:
+            response.SetContentType("text") 
         try:
             response.SetGetBody(path = path)
             response.SetStatusLine(200) 
+            response.SetHeader()
             self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 200,\
-                len(response.GetRes()), userAgent))
+                len(response.GetRes()[-1]), userAgent))
         except:
+            response.SetContentType("text")
             self.mylog.LogError("forbidden")
             response.SetGetBody(path = parameter.html403_path)
             response.SetStatusLine(403) 
+            response.SetHeader()
             self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 403,\
-                len(response.GetRes()), userAgent))
+                len(response.GetRes()[-1]), userAgent))
         finally:
-            self.newsocket.send(response.GetRes())              
+            self.SendResponse(response)              
     
     #和Get方法一样，不过最后把body设为"" 
     def DealHead(self, response, path, request, userAgent):
-        response.SetHeader("text") 
+        if path.endswith(("jpeg","jpg")):
+            response.SetContentType("image") 
+        else:
+            response.SetContentType("text") 
         try:
             response.SetGetBody(path = path)
-            response.SetBody(body = "")
+            response.SetBody("")
             response.SetStatusLine(200) 
+            response.SetHeader()
             self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 200,\
-                len(response.GetRes()), userAgent))
+                len(response.GetRes()[-1]), userAgent))
         except:
+            response.SetContentType("text")
             self.mylog.LogError("forbidden")
             response.SetGetBody(path = parameter.html403_path)
-            response.SetBody(body = "")
+            response.SetBody("")
             response.SetStatusLine(403) 
+            response.SetHeader()
             self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 403,\
-                len(response.GetRes()), userAgent))
+                len(response.GetRes()[-1]), userAgent))
         finally:
-            self.newsocket.send(response.GetRes())     
+            self.SendResponse(response)      
         
     # 解析和发送
     def run(self):
