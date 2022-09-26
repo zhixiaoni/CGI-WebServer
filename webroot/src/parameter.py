@@ -28,9 +28,9 @@ parser.add_argument('-maxw', '--maxWaiting', default= 16)
 args = parser.parse_args()
 # 参数
 ip = args.ip
-port = args.port
-maxConnection = args.maxConnection
-maxWaiting = args.maxWaiting
+port = int(args.port)
+maxConnection = int(args.maxConnection)
+maxWaiting = int(args.maxWaiting)
 
 
 

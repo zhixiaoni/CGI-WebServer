@@ -15,7 +15,7 @@ def  WebServer():
     # setsockopt 超时断连等设置
     # server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # 绑定
-    server.bind((parameter.ip, int(parameter.port)))
+    server.bind((parameter.ip, parameter.port))
     
     # 缓冲队列中的最大数目
     server.listen(parameter.maxWaiting)
