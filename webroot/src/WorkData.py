@@ -250,6 +250,6 @@ class WorkData(threading.Thread):
         except IOError:
             self.mylog.LogError("send error")
         finally:
-            WorkData.connectingThread.remove(self)
+            # WorkData.connectingThread.remove(self)
             self.newsocket.shutdown(SHUT_RDWR)
             self.newsocket.close()
