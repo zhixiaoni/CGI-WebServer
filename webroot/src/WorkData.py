@@ -80,8 +80,15 @@ class Response():
         
     # TODO 
     # Post方法，调用CGI
-    def SetPostBody(self, path):
-        self.body = subprocess.check_output(args = "python " + path, shell = True, env = None).decode('gb2312')
+    def SetPostBody(self, path, recvData):
+        pattern = re.compile("(.*)(Accept-Language:)(.+)(\r\n\r\n)(.*)",re.S)
+        m = pattern.match(recvData)
+        cmd = "python " + path
+        
+        if m is not None:
+            cmd = cmd + " " + m.group(5)
+        print(cmd)
+        self.body = subprocess.check_output(args = cmd, shell = True, env = None).decode('gb2312')
         
     #输出最终报文结果
     def GetRes(self):
@@ -194,9 +201,8 @@ class WorkData(threading.Thread):
         finally:
             self.SendResponse(response)      
     
-    def DealPost(self, response, path, request, userAgent):
-        
-        response.SetPostBody(path)
+    def DealPost(self, response, path, request, userAgent, recvData):
+        response.SetPostBody(path, recvData)
         response.SetStatusLine(200)
         response.SetHeader()
         self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 200,\
@@ -211,7 +217,6 @@ class WorkData(threading.Thread):
             print(recvData)
             
             method, path, resolvRes = self.Resolv(recvData)
-            print(path)
             response = Response(self.mylog)
             # 解析失败 有语法错误 返回400
             if not resolvRes:
@@ -231,7 +236,7 @@ class WorkData(threading.Thread):
                 
             #POST方法
             elif method == "POST":
-                self.DealPost(response = response, path = path, request = request, userAgent =userAgent) 
+                self.DealPost(response = response, path = path, request = request, userAgent =userAgent, recvData = recvData) 
                  
             #HEAD方法
             else:
