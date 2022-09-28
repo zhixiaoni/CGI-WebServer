@@ -45,8 +45,8 @@ con.commit()
 print('''
 	<html>
     <head>
-        <meta charset="gb2312">
-        <title>更改菜品名</title>
+        <meta charset="utf-8">
+        <title>Modify dish name</title>
         <link rel="stylesheet" href="../css/demo.css">
         <script type="text/javascript" src="../js/demo.js"></script>
     </head>
@@ -55,15 +55,15 @@ print('''
         <fieldset style="width: 40rem;height: 97%;margin:0 auto;border-radius: 0.5rem;background-color: rgba(240, 248, 255, 0.622);">
 		
             <fieldset style="width: 30rem;height: 5%;margin:0 auto;border:none;font-size: xx-large;text-align: center;text-decoration: dashed;-webkit-text-stroke: 0.5px rgb(254, 254, 254);font-weight: 900;">
-                更改菜品名
+                Modify dish name
             </fieldset> 
             <div style="width:100%;;border-bottom:3px solid #000000;"></div>
             <fieldset style="border: none; height:78%;overflow-y: scroll;">
 ''')
 
-print("<center>修改成功！</center>")
+print("<center>Modified successfully！</center>")
 
-print('''<br><center><a href="../index.html"  target="opentype">跳转到主页</a></center>
+print('''<br><center><a href="../index.html"  target="opentype">Jump to Homepage</a></center>
 </fieldset>
             <div style="width:100%;height: 1rem;border-top:3px solid #000000;"></div>
         </fieldset><div style="width:100%;height: 1rem;border:none;"></div>

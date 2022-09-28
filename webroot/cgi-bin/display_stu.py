@@ -30,8 +30,8 @@ data = cur.fetchall()
 print('''
 	<html>
     <head>
-        <meta charset="gb2312">
-        <title>菜品选择</title>
+        <meta charset="utf-8">
+        <title>Dish choice</title>
         <link rel="stylesheet" href="../css/demo.css">
         <script type="text/javascript" src="../js/demo.js"></script>
     </head>
@@ -40,7 +40,7 @@ print('''
         <fieldset style="width: 40rem;height: 97%;margin:0 auto;border-radius: 0.5rem;background-color: rgba(240, 248, 255, 0.622);">
 		
             <fieldset style="width: 30rem;height: 5%;margin:0 auto;border:none;font-size: xx-large;text-align: center;text-decoration: dashed;-webkit-text-stroke: 0.5px rgb(254, 254, 254);font-weight: 900;">
-                菜品选择
+                Dish choice
             </fieldset> 
             <div style="width:100%;;border-bottom:3px solid #000000;"></div>
 			<form action="/cgi-bin/order.py" method="post" target="_blank">
@@ -68,7 +68,7 @@ for item in data:
 
 print('''</fieldset>
             <div style="width:100%;height: 1rem;border-top:3px solid #000000;"></div>
-                <input  class="button button2" style="margin:0 auto;" type="submit" value="提交订单" /></form>
+                <input  class="button button2" style="margin:0 auto;" type="submit" value="Submit the order" /></form>
         </fieldset><div style="width:100%;height: 1rem;border:none;"></div>
     </body>
 </html>''', end="")

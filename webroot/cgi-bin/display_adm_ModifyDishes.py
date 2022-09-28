@@ -30,8 +30,8 @@ data = cur.fetchall()
 print('''
 	<html>
     <head>
-        <meta charset="gb2312">
-        <title>修改菜品信息</title>
+        <meta charset="utf-8">
+        <title>Modify dish information</title>
         <link rel="stylesheet" href="../css/demo.css">
         <script type="text/javascript" src="../js/demo.js"></script>
     </head>
@@ -39,29 +39,29 @@ print('''
         
         <div style = "display: none;margin:0 auto;border-radius: 0.5rem; width: 30rem;height: 80%;
         border: 3px solid rgb(25, 24, 22); background-color: white; z-index:1002;  overflow: auto;background-color: rgba(240, 248, 255, 0.622);" id = "changeblock">
-        <center style = "margin:5%;"><button onclick="closewindow()" class = "button button1">返回</button></center>
+        <center style = "margin:5%;"><button onclick="closewindow()" class = "button button1">Return to the previous page</button></center>
         <form action="/cgi-bin/modify.py" method="post" target="_blank">
-        <fieldset style="border-radius: 0.5rem;"><label class="input input1">编号：</label><input readonly="readonly" placeholder="123" type="text" class = "input input1" id="change_id" name="change_id" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input>
+        <fieldset style="border-radius: 0.5rem;"><label class="input input1">Number: </label><input readonly="readonly" placeholder="123" type="text" class = "input input1" id="change_id" name="change_id" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input>
             <br> 
             <br> 
-            <label class="input input1">菜名：</label><input placeholder="123" type="text" id="change_name" name="change_name" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input>
+            <label class="input input1">Dish name: </label><input placeholder="123" type="text" id="change_name" name="change_name" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input>
             <br> 
             <br> 
-            <label class="input input1">描述：</label><input placeholder="123" type="text" id="change_describe" name="change_describe" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input> 
+            <label class="input input1">Introduction: </label><input placeholder="123" type="text" id="change_describe" name="change_describe" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input> 
             <br>
             <br> 
-            <div><div style="float:left"><label class="input">价格：</label> 
+            <div><div style="float:left"><label class="input">Price: </label> 
             <input type="text" placeholder="123" id="change_price" name="change_price" id="change_price" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></div><div style="float:right;">
             </div>  
         </fieldset>
-        <center style = "margin:5%;"><button type="submit" class="button button1"> 提交更改 </button></center></div>
+        <center style = "margin:5%;"><button type="submit" class="button button1"> Submit your changes </button></center></div>
         </form> 
         </div>
 
         <fieldset id = "distable" style="width: 40rem;height: 97%;margin:0 auto;border-radius: 0.5rem;background-color: rgba(240, 248, 255, 0.622);">
 		
             <fieldset style="width: 30rem;height: 5%;margin:0 auto;border:none;font-size: xx-large;text-align: center;text-decoration: dashed;-webkit-text-stroke: 0.5px rgb(254, 254, 254);font-weight: 900;">
-                修改菜品信息
+                Modify dish information
             </fieldset> 
             <div style="width:100%;;border-bottom:3px solid #000000;"></div>
             <fieldset style="border: none; height:78%;overflow-y: scroll;">
@@ -86,7 +86,7 @@ for item in data:
 	print('''></div><div style="float:right;">''', end="")
 	print('''<button type='button' onclick="change(''', end="")
 	print(item[0], end="")
-	print(''')" class="button button1"> 更改信息 </div> </div> </div> </fieldset>''', end="")
+	print(''')" class="button button1"> Modify information </div> </div> </div> </fieldset>''', end="")
 
 print('''</fieldset>
             <div style="width:100%;height: 1rem;border-top:3px solid #000000;"></div>
