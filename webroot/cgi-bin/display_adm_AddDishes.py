@@ -43,7 +43,7 @@ print('''
             <fieldset style="border: none; height:78%;overflow-y: scroll;">
                 <p>请输入菜品名称：<input type="text" name="name" /></p>
                 <p>请输入菜品介绍：</p>
-                <p><textarea cols="80" rows="10"></textarea></p>
+                <p><textarea type="text"  name="describe" cols="80" rows="10"></textarea></p>
                 <p>请输入菜品价格（单位：元）：<input type="text" name="price" /></p>
 ''')
 
