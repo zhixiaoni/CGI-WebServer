@@ -41,16 +41,16 @@ print('''
         border: 3px solid rgb(25, 24, 22); background-color: white; z-index:1002;  overflow: auto;background-color: rgba(240, 248, 255, 0.622);" id = "changeblock">
         <center style = "margin:5%;"><button onclick="closewindow()" class = "button button1">Return to the previous page</button></center>
         <form action="/cgi-bin/modify.py" method="post" target="_blank">
-        <fieldset style="border-radius: 0.5rem;"><label class="input input1">Number: </label><input readonly="readonly" placeholder="123" type="text" class = "input input1" id="change_id" name="change_id" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input>
+        <fieldset style="border-radius: 0.5rem;"><label class="input input1">Num:</label><input readonly="readonly" placeholder="123" type="text" class = "input input1" id="change_id" name="change_id" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input>
             <br> 
             <br> 
-            <label class="input input1">Dish name: </label><input placeholder="123" type="text" id="change_name" name="change_name" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input>
+            <label class="input input1">Name:</label><input placeholder="123" type="text" id="change_name" name="change_name" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input>
             <br> 
             <br> 
-            <label class="input input1">Introduction: </label><input placeholder="123" type="text" id="change_describe" name="change_describe" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input> 
+            <label class="input input1">Intro:</label><input placeholder="123" type="text" id="change_describe" name="change_describe" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></input> 
             <br>
             <br> 
-            <div><div style="float:left"><label class="input">Price: </label> 
+            <div><div style="float:left"><label class="input">Price:</label> 
             <input type="text" placeholder="123" id="change_price" name="change_price" id="change_price" style = "width:20rem;background-color: rgba(240, 248, 255, 0.622);"></div><div style="float:right;">
             </div>  
         </fieldset>

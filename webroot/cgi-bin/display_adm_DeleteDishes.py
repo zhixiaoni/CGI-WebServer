@@ -53,7 +53,7 @@ print('''
 ''')
 
 # 打印数据
-print('''<h3>Please tick √ in the □ corresponding to the dishes you need to delete</h3>''')
+print('''<h3>Please tick √ in the □ about the dishes you need to delete:</h3>''')
 for item in data:
     print('''<fieldset style="border-radius: 0.5rem;"><div style = "font-weight: 700;">''', end="")
     print(item[1], end="")
