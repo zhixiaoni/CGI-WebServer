@@ -46,11 +46,6 @@ class Response():
         self.header = Response.contentTypeDict[self.contentType] \
             +"Connection: close\r\n"
             
-        # self.header = Response.contentLength \
-        #     + str(len(self.body)) \
-        #     + "\r\n" \
-        #     + Response.contentTypeDict[self.contentType] \
-        #     +"Connection: close\r\n"
     
     def SetContentType(self, contentType = "text"):
         self.contentType = contentType

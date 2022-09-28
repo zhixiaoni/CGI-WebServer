@@ -1,9 +1,7 @@
 from sshtunnel import SSHTunnelForwarder
 import pymysql
 
-header = 'Content-Type: text/html'
- 
-print(header)
+
 # 通过SSH连接云服务器
 server = SSHTunnelForwarder(
 	ssh_address_or_host=("152.136.113.252", 12141),  # 云服务器地址IP和端口port

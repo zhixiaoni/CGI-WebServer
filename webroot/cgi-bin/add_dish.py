@@ -4,9 +4,7 @@ import pymysql
 
 import cgi
 
-header = 'Content-Type: text/html'
- 
-print(header)
+
 
 # 通过SSH连接云服务器
 server = SSHTunnelForwarder(
