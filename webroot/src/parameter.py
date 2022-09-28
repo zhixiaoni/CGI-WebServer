@@ -16,7 +16,8 @@ index_path = os.path.join(webroot_path,r"index.html")
 html404_path = os.path.join(webroot_path,r"404.html")
 html400_path = os.path.join(html_path,r"400.html")
 html403_path = os.path.join(html_path,r"403.html")
-
+admin_path = os.path.join(webroot_path,r"admin.html")
+student_path =  os.path.join(webroot_path,r"student.html")
 # net
 # 参数解析器
 parser = argparse.ArgumentParser()

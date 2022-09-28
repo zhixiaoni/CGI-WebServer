@@ -3,6 +3,7 @@ import threading
 import parameter
 import re
 from socket import SHUT_RDWR
+import subprocess
 
 class Response():
     #详见http格式.txt
@@ -61,10 +62,18 @@ class Response():
     #设置Body  
     #Get方法，考察访问权限，直接返回路径下的文件
     def SetGetBody(self, path = parameter.index_path):
-        if not (path == parameter.index_path or path == parameter.html404_path or \
-            path.startswith(parameter.html_path) or path.startswith(parameter.CGI_path) or \
+        
+        def FileExam(path):
+            if not (path == parameter.index_path or path == parameter.html404_path or \
+                path == parameter.student_path or path == parameter.admin_path or  \
+                path.startswith(parameter.html_path) or path.startswith(parameter.CGI_path) or \
                 path.startswith(parameter.picture_path)):
-            raise IOError
+                return False
+            return True
+        
+        # if not FileExam(path):
+        #     raise IOError
+        
         if self.contentType == "image":
             f = open(path, mode = "rb")
             self.body = f.read()
@@ -76,8 +85,8 @@ class Response():
         
     # TODO 
     # Post方法，调用CGI
-    def SetPostBody(self):
-        pass
+    def SetPostBody(self, path):
+        self.body = subprocess.check_output(args = "python " + path, shell = True, env = None).decode('gb2312')
         
     #输出最终报文结果
     def GetRes(self):
@@ -102,7 +111,7 @@ class WorkData(threading.Thread):
         
         
     def Resolv(self, recvData):
-        pattern = re.compile("([a-zA-Z]+)([ /]*)([a-zA-Z0-9./]*)( HTTP/1.1)(.*)", re.S)
+        pattern = re.compile("([a-zA-Z]+)([ /]*)([a-zA-Z0-9._/\-]*)( HTTP/1.1)(.*)", re.S)
         m = pattern.match(recvData)
         try:
             method = m.group(1)
@@ -189,6 +198,16 @@ class WorkData(threading.Thread):
                 len(response.GetRes()[-1]), userAgent))
         finally:
             self.SendResponse(response)      
+    
+    def DealPost(self, response, path, request, userAgent):
+        
+        response.SetPostBody(path)
+        response.SetStatusLine(200)
+        response.SetHeader()
+        self.mylog.LogInfo(self.mylog.StdInfo(self.client_addr, request, 200,\
+                len(response.GetRes()[-1]), userAgent))
+        self.SendResponse(response)
+    
         
     # 解析和发送
     def run(self):
@@ -197,7 +216,7 @@ class WorkData(threading.Thread):
             print(recvData)
             
             method, path, resolvRes = self.Resolv(recvData)
-            
+            print(path)
             response = Response(self.mylog)
             # 解析失败 有语法错误 返回400
             if not resolvRes:
@@ -214,13 +233,15 @@ class WorkData(threading.Thread):
             #GET方法
             if method == "GET":
                 self.DealGet(response = response, path = path, request = request, userAgent =userAgent)
+                
             #POST方法
             elif method == "POST":
-                pass    
+                self.DealPost(response = response, path = path, request = request, userAgent =userAgent) 
+                 
             #HEAD方法
             else:
                 self.DealHead(response = response, path = path, request = request, userAgent =userAgent) 
-            #print(response.GetRes())
+
         except IOError:
             self.mylog.LogError("send error")
         finally:
