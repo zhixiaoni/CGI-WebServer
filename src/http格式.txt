@@ -1,0 +1,11 @@
+http响应报文格式：状态行，响应头部，空行和响应包体
+
+以下是一个实例
+状态行："HTTP/1.1 200 OK\r\n "
+响应头部："Content-Length: 128\r\n" + "Content-Type: text/html; charset=UTF-8\r\n" + "Connection: close\r\n"
+空行： "\r\n"
+报文："""<html>
+<body>
+finnaly success
+</body>
+</html>"""
