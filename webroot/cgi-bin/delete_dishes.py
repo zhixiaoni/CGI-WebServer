@@ -54,7 +54,7 @@ print('''
             <br><a href="../index.html"  target="opentype">跳转到主页</a>
             </fieldset>
 ''')
-#
+#执行删除
 def isiterable(obj):
     try:
         iter(obj)
