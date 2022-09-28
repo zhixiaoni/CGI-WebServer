@@ -3,7 +3,6 @@ import threading
 import parameter
 import re
 from socket import SHUT_RDWR
-import base64
 
 class Response():
     #详见http格式.txt
