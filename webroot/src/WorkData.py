@@ -91,7 +91,7 @@ class Response():
         cmd = "python " + path
         
         if m is not None:
-            cmd = cmd + " " + m.group(5)
+            cmd = cmd + ' "' + m.group(5) + '"'
         print(cmd)
         self.body = subprocess.check_output(args = cmd, shell = True, env = None).decode('gb2312')
         
