@@ -59,15 +59,20 @@ class Response():
     def SetGetBody(self, path = parameter.index_path):
         
         def FileExam(path):
-            if not (path == parameter.index_path or path == parameter.html404_path or \
-                path == parameter.student_path or path == parameter.admin_path or  \
-                path.startswith(parameter.html_path) or path.startswith(parameter.CGI_path) or \
-                path.startswith(parameter.picture_path)):
+            pattern = re.compile(r"([a-zA-Z0-9\.:_/\\-]*)\.([a-zA-Z0-9]*)", re.S)
+            m = pattern.match(path)
+            sourceTypeList = ["html", "jpeg", "jpg", "png", "py", "css", "js"]
+            try:
+                suffix = m.group(2)
+                if suffix in sourceTypeList:
+                    return True
                 return False
-            return True
+            except:
+                self.mylog.LogError("fileExam error")
+                return False
         
-        # if not FileExam(path):
-        #     raise IOError
+        if not FileExam(path):
+            raise IOError
         
         if self.contentType == "image":
             f = open(path, mode = "rb")
