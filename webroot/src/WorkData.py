@@ -61,7 +61,7 @@ class Response():
         def FileExam(path):
             pattern = re.compile(r"([a-zA-Z0-9\.:_/\\-]*)\.([a-zA-Z0-9]*)", re.S)
             m = pattern.match(path)
-            sourceTypeList = ["html", "jpeg", "jpg", "png", "py", "css", "js"]
+            sourceTypeList = ["html", "jpeg", "jpg", "png", "gif", "py", "css", "js"]
             try:
                 suffix = m.group(2)
                 if suffix in sourceTypeList:
