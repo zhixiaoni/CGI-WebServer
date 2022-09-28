@@ -10,10 +10,11 @@ class ThreadPool(object):
         self.taskQueue = queue.Queue(maxConnection)
         self.maxConnection = maxConnection
         self.cancel = False
-        self.terminal = False
+        self.terminal = False   # 是否设置线程池强制终止
         self.activeThread = []
-        self.freeThread = []
+        self.freeThread = []    # 空闲线程的线程列表
 
+    #将任务放入队列，等待线程池阻塞读取，参数是被执行的函数和函数参数
     def submit(self, task, args):
         # if self.cancel:
         #     return
@@ -25,7 +26,7 @@ class ThreadPool(object):
 
     def getTask(self):
         self.freeThread.append(threading.currentThread())
-
+        
         task, args = self.taskQueue.get()
 
         while task != StopEvent:
