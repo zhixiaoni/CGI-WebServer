@@ -1,7 +1,7 @@
-from operator import index
+from operator import index, truediv
 from sshtunnel import SSHTunnelForwarder
 import pymysql
-import execjs
+
 
 
 import cgi
@@ -54,10 +54,21 @@ print('''
             <br><a href="../index.html"  target="opentype">跳转到主页</a>
             </fieldset>
 ''')
+#
+def isiterable(obj):
+    try:
+        iter(obj)
+        return True
+    except TypeError:
+        return False
 
-#print(len(form["del_dishes"]))
-for item in form["del_dishes"]:
-    sql = "DELETE FROM DISHES WHERE ID=" + item.value
+if(isiterable(form["del_dishes"])):
+    for item in form["del_dishes"]:
+        sql = "DELETE FROM DISHES WHERE ID=" + item.value
+        cur.execute(sql)
+        con.commit()
+else:
+    sql = "DELETE FROM DISHES WHERE ID=" + form["del_dishes"].value
     cur.execute(sql)
     con.commit()
 
