@@ -1,10 +1,8 @@
 from operator import index
 from sshtunnel import SSHTunnelForwarder
 import pymysql
-import execjs
 
 import cgi
-
 
 # 通过SSH连接云服务器
 server = SSHTunnelForwarder(
