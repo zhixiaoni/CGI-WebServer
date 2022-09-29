@@ -73,7 +73,6 @@ class Response():
         
         if not FileExam(path):
             raise IOError
-        
         if self.contentType == "image":
             f = open(path, mode = "rb")
             self.body = f.read()
@@ -90,7 +89,7 @@ class Response():
         m = pattern.match(recvData)
         cmd = "python " + path
         
-        if m is not None:
+        if m is not None and m.group(5) != "":
             cmd = cmd + ' "' + m.group(5) + '"'
         print(cmd)
         self.body = subprocess.check_output(args = cmd, shell = True, env = None).decode('gb2312')
@@ -104,7 +103,7 @@ class Response():
 
 
 class WorkData(threading.Thread):
-    connectingThread = []
+    # connectingThread = []
     
     def __init__(self, newsocket, client_addr, mylog):
         super(WorkData, self).__init__()
@@ -160,7 +159,7 @@ class WorkData(threading.Thread):
 
        
     def DealGet(self, response, path, request, userAgent):
-        if path.endswith(("jpeg","jpg")):
+        if path.endswith(("jpeg","jpg", "ico")):
             response.SetContentType("image") 
         else:
             response.SetContentType("text") 
@@ -183,7 +182,7 @@ class WorkData(threading.Thread):
     
     #和Get方法一样，不过最后把body设为"" 
     def DealHead(self, response, path, request, userAgent):
-        if path.endswith(("jpeg","jpg")):
+        if path.endswith(("jpeg","jpg", "ico")):
             response.SetContentType("image") 
         else:
             response.SetContentType("text") 

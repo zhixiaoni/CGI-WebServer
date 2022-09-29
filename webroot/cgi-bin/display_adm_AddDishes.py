@@ -31,7 +31,7 @@ print('''
         <link rel="stylesheet" href="../css/demo.css">
         <script type="text/javascript" src="../js/demo.js"></script>
     </head>
-    <body background="../pictures/background.jpg" style="background-attachment:fixed;background-size:100%;">
+    <body background="../picture/dynamic/background.jpg" style="background-attachment:fixed;background-size:100%;">
         
         <fieldset style="width: 40rem;height: 97%;margin:0 auto;border-radius: 0.5rem;background-color: rgba(240, 248, 255, 0.622);">
 		

@@ -1,6 +1,5 @@
 import socket
 import parameter
-import threading
 from WorkData import WorkData
 from ThreadPool import ThreadPool
 from log import MyLog
@@ -27,12 +26,12 @@ def  WebServer():
     while True:
         
         # 线程控制 最大数目 parameter.MaxConnection
-        if len(WorkData.connectingThread) < parameter.maxConnection:
+        # if len(WorkData.connectingThread) < parameter.maxConnection:
             # 接受
-            newsocket, client_addr = server.accept()
+        newsocket, client_addr = server.accept()
             # 创建新线程处理连接
             # print("Thread main id: "+str(threading.current_thread), threading.active_count())
-            pool.submit(WorkData,(newsocket, client_addr, mylog,))
+        pool.submit(WorkData,(newsocket, client_addr, mylog))
             # WorkData.connectingThread.append(WorkData(newsocket, client_addr, mylog))    #加入队列
             # WorkData.connectingThread[-1].setDaemon(True)   #设为守护进程
             # WorkData.connectingThread[-1].start()   #开始

@@ -35,7 +35,7 @@ print('''
         <link rel="stylesheet" href="../css/demo.css">
         <script type="text/javascript" src="../js/demo.js"></script>
     </head>
-    <body background="../pictures/background.jpg" style="background-attachment:fixed;background-size:100%;">
+    <body background="../picture/dynamic/background.jpg" style="background-attachment:fixed;background-size:100%;">
         
         <div style = "display: none;margin:0 auto;border-radius: 0.5rem; width: 30rem;height: 80%;
         border: 3px solid rgb(25, 24, 22); background-color: white; z-index:1002;  overflow: auto;background-color: rgba(240, 248, 255, 0.622);" id = "changeblock">
