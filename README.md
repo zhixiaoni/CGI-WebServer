@@ -16,6 +16,8 @@
 
 #### 环境安装
 
+    在云服务器上装好对应的mysql数据库
+
     使用pip进行虚拟环境管理，请预装好python 3.8.10 或使用其他包管理器
 
     git clone https://github.com/zhixiaoni/CGI-WebServer.git
@@ -27,6 +29,8 @@
     (.venv) pip install -r webroot/requirements.txt
 
 #### 使用说明
+
+    数据库云服务器ssh连接设置在webroot/cgi-bin/parameter.py，如ip,port, ssh用户和密码
 
     直接运行即可
     (.venv) python webroot/src/main.py -p xxxx --ip x.x.x.x -maxc x -maxw x

@@ -1,14 +1,14 @@
 from sshtunnel import SSHTunnelForwarder
 import pymysql
-
+import parameter
 import cgi
 
 # 通过SSH连接云服务器
 server = SSHTunnelForwarder(
-	ssh_address_or_host=("152.136.113.252", 12141),  # 云服务器地址IP和端口port
-	ssh_username="team",  # 云服务器登录账号admin
-	ssh_password="team",  # 云服务器登录密码password
-	remote_bind_address=('localhost', 3306)
+	ssh_address_or_host = parameter.ssh_address_or_host,  # 云服务器地址IP和端口port
+	ssh_username = parameter.ssh_username,  # 云服务器登录账号admin
+	ssh_password = parameter.ssh_password,  # 云服务器登录密码password
+	remote_bind_address= parameter.remote_bind_address
 )
 
 # 云服务器开启
